@@ -1,0 +1,21 @@
+# A Service is a higher-level resource that provides network access to a set of replica Pods
+# allowing them to communicate with each other and with external clients.
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-gateway
+  labels:
+    app: api-gateway
+spec:
+  # Using a NodePort gives you the freedom to set up your own load balancing solution, to configure environments that are
+  # not fully supported by Kubernetes, or even to expose one or more nodes' IP addresses directly.
+  type: NodePort
+  # Select all pods with label app: api-gateway
+  selector:
+    app: api-gateway
+  ports:
+    # The port number on which the Service listens for incoming traffic
+    - port: 8181
+      protocol: TCP
+      targetPort: 8181 # The port exposed in the api-gateway pod's containers
+      nodePort: 8181
