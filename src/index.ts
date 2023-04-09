@@ -1,7 +1,9 @@
 import express, { Express, Request, Response } from 'express';
 import axios, { AxiosRequestConfig } from "axios";
+import { decodeFirebaseIdToken } from './auth-middleware';
 
 const app: Express = express();
+app.use(decodeFirebaseIdToken);
 
 const port = 8181;
 
@@ -29,12 +31,12 @@ app.get('/user-service/**', async (req: Request, res: Response) => {
     try {
         const response = await axios(getAxiosConfigFromRequest(req, userServiceUrl));
         res.send(response.data);
-    } catch(err: any) {
+    } catch (err: any) {
         if (err && err.response) {
             res.status(err.response.status).send(err.response.data);
         } else {
             res.status(500).send(err.message);
-        }   
+        }
     }
 });
 
@@ -44,7 +46,7 @@ app.get("/training-service/**", async (req: Request, res: Response) => {
     try {
         const response = await axios(getAxiosConfigFromRequest(req, traningServiceUrl));
         res.send(response.data);
-    } catch(err: any) {
+    } catch (err: any) {
         if (err && err.response) {
             res.status(err.response.status).send(err.response.data);
         } else {
@@ -54,5 +56,5 @@ app.get("/training-service/**", async (req: Request, res: Response) => {
 });
 
 app.listen(port, () => {
-  console.log(`⚡️[server]: Server :) is running at port ${port}`);
+    console.log(`⚡️[server]: Server :) is running at port ${port}`);
 });
