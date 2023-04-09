@@ -26,7 +26,7 @@ const getAxiosConfigFromRequest = (req: Request, serviceUrl: string): AxiosReque
 }
 
 app.get('/user-service/**', async (req: Request, res: Response) => {
-    const userServicePort = 3000;
+    const userServicePort = 7878;
     const userServiceUrl = `http://user-service:${userServicePort}${req.url.replace('/user-service', '')}`;
     try {
         const response = await axios(getAxiosConfigFromRequest(req, userServiceUrl));
