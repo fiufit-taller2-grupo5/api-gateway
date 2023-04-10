@@ -33,12 +33,13 @@ const getAxiosConfigFromRequest = (req: Request, serviceUrl: string): AxiosReque
 }
 
 app.get('/user-service/**', async (req: Request, res: Response) => {
-    const userServicePort = 3000;
-    const userServiceUrl = `http://user-service:${userServicePort}${req.url.replace('/user-service', '')}`;
-    console.log(`Sending ${req.method} request to ${userServiceUrl}`);
+    const userServiceUrl = `http://user-service${req.url.replace('/user-service', '')}`;
+    
     try {
         let axiosConfig = getAxiosConfigFromRequest(req, userServiceUrl);
+        console.log(`Sending ${req.method} request to ${userServiceUrl}`);
         const response = await axios(axiosConfig);
+
         res.send(response.data);
     } catch (err: any) {
         if (err.code == '404') {
@@ -52,8 +53,7 @@ app.get('/user-service/**', async (req: Request, res: Response) => {
 });
 
 app.get("/training-service/**", async (req: Request, res: Response) => {
-    const traningServicePort = 3000;
-    const traningServiceUrl = `http://training-service:${traningServicePort}${req.url.replace('/training-service', '')}`;
+    const traningServiceUrl = `http://training-service${req.url.replace('/training-service', '')}`;
     try {
         const response = await axios(getAxiosConfigFromRequest(req, traningServiceUrl));
         res.send(response.data);
