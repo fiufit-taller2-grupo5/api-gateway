@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
         - name: api-gateway
-          image: registry.cloud.okteto.net/prod-szwtomas/api-gateway:v2
+          image: registry.cloud.okteto.net/prod-szwtomas/api-gateway:v3
           ports:
             - containerPort: 8181
       # This means that, if the container exits for any reason, it should restart again. It is the default value

@@ -38,7 +38,10 @@ const handleUserServiceRequest = async (req: Request, res: Response) => {
         let axiosConfig = getAxiosConfigFromRequest(req, userServiceUrl);
         console.log(`Sending ${req.method} request to ${userServiceUrl}`);
         const response = await axios(axiosConfig);
-
+        for (const key in response.headers) {
+            res.setHeader(key, response.headers[key]);
+        }
+        
         res.send(response.data);
     } catch (err: any) {
         if (err.code == '404') {
