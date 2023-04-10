@@ -1,8 +1,12 @@
 import express, { Express, Request, Response } from 'express';
 import axios, { AxiosRequestConfig } from "axios";
 import { decodeFirebaseIdToken } from './auth-middleware';
+import cors from "cors";
 
 const app: Express = express();
+
+app.use(cors());
+
 app.use(decodeFirebaseIdToken);
 
 const port = 8181;
