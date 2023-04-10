@@ -7,7 +7,6 @@ import morgan from "morgan";
 const app: Express = express();
 
 app.use(cors());
-app.use(express.json())
 app.use(morgan("common"));
 app.use(decodeFirebaseIdToken);
 
@@ -28,11 +27,11 @@ const getAxiosConfigFromRequest = (req: Request, serviceUrl: string): AxiosReque
         url: serviceUrl,
         headers: req.headers,
         data: req.body,
-        timeout: 5000, // 5 secs
+        timeout: 3000, // 3 secs
     };
 }
 
-app.get('/user-service/**', async (req: Request, res: Response) => {
+const handleUserServiceRequest = async (req: Request, res: Response) => {
     const userServiceUrl = `http://user-service${req.url.replace('/user-service', '')}`;
     
     try {
@@ -50,7 +49,10 @@ app.get('/user-service/**', async (req: Request, res: Response) => {
             res.status(500).send(err.message);
         }
     }
-});
+};
+
+app.all('/user-service/**', handleUserServiceRequest);
+
 
 app.get("/training-service/**", async (req: Request, res: Response) => {
     const traningServiceUrl = `http://training-service${req.url.replace('/training-service', '')}`;
