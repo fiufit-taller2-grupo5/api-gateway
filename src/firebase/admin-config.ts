@@ -1,6 +1,7 @@
 import * as dotenv from 'dotenv';
 import firebase from 'firebase-admin';
-import serviceAccount from './credentials.json';
+import serviceAccount from "./config/credentials.json";
+
 dotenv.config();
 
 const firebaseApp = firebase.initializeApp({

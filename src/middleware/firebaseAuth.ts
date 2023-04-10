@@ -1,21 +1,15 @@
-import firebase from './admin-config';
+import firebase from '../firebase/admin-config';
 import { Request, Response, NextFunction } from 'express';
 
 interface UserPayload {
   // Define userPayload properties here
 }
 
-const roleRanks = {
-  superAdmin: 1,
-  admin: 2,
-  user: 3,
-};
-
 interface AuthenticatedRequest extends Request {
   user?: UserPayload;
 }
 
-export const decodeFirebaseIdToken = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+export const firebaseAuth = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   const headers = req.headers;
   if (headers.dev) {
     console.log("User in dev mode");
