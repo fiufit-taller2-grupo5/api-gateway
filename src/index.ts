@@ -33,12 +33,16 @@ const getAxiosConfigFromRequest = (req: Request, serviceUrl: string): AxiosReque
 app.get('/user-service/**', async (req: Request, res: Response) => {
     const userServicePort = 7878;
     const userServiceUrl = `http://user-service:${userServicePort}${req.url.replace('/user-service', '')}`;
-    console.log(`Sending ${req.method} request to ${userServiceUrl}}`);
+    console.log(`Sending ${req.method} request to ${userServiceUrl}`);
     try {
-        const response = await axios(getAxiosConfigFromRequest(req, userServiceUrl));
+        let axiosConfig = getAxiosConfigFromRequest(req, userServiceUrl);
+        axiosConfig.timeout = 5000; // set timeout to 5 seconds
+        const response = await axios(axiosConfig);
         res.send(response.data);
     } catch (err: any) {
-        if (err && err.response) {
+        if (err.code === '404') {
+            res.status(404).send('User-service endpoint not found');
+        } else if (err && err.response) {
             res.status(err.response.status).send(err.response.data);
         } else {
             res.status(500).send(err.message);
