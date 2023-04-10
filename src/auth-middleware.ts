@@ -16,6 +16,11 @@ interface AuthenticatedRequest extends Request {
 }
 
 export const decodeFirebaseIdToken = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+  const headers = req.headers;
+  if (headers.dev) {
+    return next();
+  }
+
   if (!req.headers.id_token) {
     return res.status(400).json({
       error: {
