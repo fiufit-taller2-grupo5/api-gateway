@@ -7,6 +7,7 @@ import morgan from "morgan";
 const app: Express = express();
 
 app.use(cors());
+app.use(express.json())
 app.use(morgan("common"));
 app.use(decodeFirebaseIdToken);
 
@@ -27,20 +28,20 @@ const getAxiosConfigFromRequest = (req: Request, serviceUrl: string): AxiosReque
         url: serviceUrl,
         headers: req.headers,
         data: req.body,
+        timeout: 5000, // 5 secs
     };
 }
 
 app.get('/user-service/**', async (req: Request, res: Response) => {
-    const userServicePort = 7878;
+    const userServicePort = 3000;
     const userServiceUrl = `http://user-service:${userServicePort}${req.url.replace('/user-service', '')}`;
     console.log(`Sending ${req.method} request to ${userServiceUrl}`);
     try {
         let axiosConfig = getAxiosConfigFromRequest(req, userServiceUrl);
-        axiosConfig.timeout = 5000; // set timeout to 5 seconds
         const response = await axios(axiosConfig);
         res.send(response.data);
     } catch (err: any) {
-        if (err.code === '404') {
+        if (err.code == '404') {
             res.status(404).send('User-service endpoint not found');
         } else if (err && err.response) {
             res.status(err.response.status).send(err.response.data);

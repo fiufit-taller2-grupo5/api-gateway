@@ -22,7 +22,7 @@ export const decodeFirebaseIdToken = async (req: AuthenticatedRequest, res: Resp
     return next();
   }
 
-  if (!req.headers.id_token) {
+  if (!req.headers.authorization && !req.headers.id_token) {
     console.log("User not authenticated");
     return res.status(401).json({
       error: {
@@ -32,7 +32,9 @@ export const decodeFirebaseIdToken = async (req: AuthenticatedRequest, res: Resp
   }
 
   try {
-    const userPayload: UserPayload = await firebase.auth().verifyIdToken(req.headers.id_token as string);
+    const authHeader = req.headers.authorization as string;
+    const idToken: string = authHeader.split('Bearer ')[1];
+    const userPayload: UserPayload = await firebase.auth().verifyIdToken(idToken);
     req.user = userPayload;
     console.log("User validated");
     next();
