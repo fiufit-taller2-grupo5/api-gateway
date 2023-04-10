@@ -2,11 +2,12 @@ import express, { Express, Request, Response } from 'express';
 import axios, { AxiosRequestConfig } from "axios";
 import { decodeFirebaseIdToken } from './auth-middleware';
 import cors from "cors";
+import morgan from "morgan";
 
 const app: Express = express();
 
 app.use(cors());
-
+app.use(morgan("common"));
 app.use(decodeFirebaseIdToken);
 
 const port = 8181;
@@ -32,6 +33,7 @@ const getAxiosConfigFromRequest = (req: Request, serviceUrl: string): AxiosReque
 app.get('/user-service/**', async (req: Request, res: Response) => {
     const userServicePort = 7878;
     const userServiceUrl = `http://user-service:${userServicePort}${req.url.replace('/user-service', '')}`;
+    console.log(`Sending ${req.method} request to ${userServiceUrl}}`);
     try {
         const response = await axios(getAxiosConfigFromRequest(req, userServiceUrl));
         res.send(response.data);
