@@ -28,6 +28,7 @@ export const firebaseAuth = async (req: AuthenticatedRequest, res: Response, nex
   try {
     const authHeader = req.headers.authorization as string;
     const idToken: string = authHeader.split('Bearer ')[1];
+    console.log(`Id Token: ${idToken}`);
     const userPayload: UserPayload = await firebase.auth().verifyIdToken(idToken);
     req.user = userPayload;
     console.log("User validated");

@@ -22,5 +22,5 @@ jobs:
       - name: Build image and deploy 
         uses: ./.github/actions
         with:
-          tag: okteto.dev/api-gateway:latest
+          tag: okteto.dev/api-gateway:v15
           file: Dockerfile
