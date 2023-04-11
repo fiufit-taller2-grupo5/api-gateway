@@ -18,8 +18,8 @@ RUN npx prisma generate
 # Builds the app
 RUN npm run build
 
-# Exposes the port 8181
-EXPOSE 8181
+# Exposes the port 80
+EXPOSE 80
 
 # Runs the app
 CMD [ "npm", "start" ]
