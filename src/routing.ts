@@ -4,19 +4,26 @@ import { Request, Response } from "express";
 const timoutInMillis = 3000;
 
 const getAxiosConfigFromRequest = (req: Request, serviceUrl: string): AxiosRequestConfig => {
+    const headers = { ...req.headers };
+  
+    // Remove headers that shouldn't be forwarded
+    delete headers['content-length'];
+    delete headers['host'];
+    delete headers['connection'];
+  
     return {
-        method: req.method,
-        url: serviceUrl,
-        headers: req.headers,
-        data: req.body,
-        timeout: timoutInMillis,
+      method: req.method,
+      url: serviceUrl,
+      headers: headers,
+      data: req.body,
+      timeout: timoutInMillis,
     };
-}
+  };
 
 const handleRequestByService = async (req: Request, res: Response, serviceUrl: string) => {
     try {
         let axiosConfig = getAxiosConfigFromRequest(req, serviceUrl);
-        console.log(`Sending ${req.method} request to ${serviceUrl}`);
+        console.log(`Sending ${req.method} request to ${serviceUrl} with body ${JSON.stringify(req.body)}`);
         const response = await axios(axiosConfig);
 
         for (const key in response.headers) {
