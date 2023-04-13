@@ -22,5 +22,8 @@ jobs:
       - name: Build image and deploy 
         uses: ./.github/actions
         with:
-          tag: okteto.dev/api-gateway:v15
+          tag: okteto.dev/api-gateway:${{ github.sha }}
           file: Dockerfile
+          sha: ${{ github.sha }}
+          okteto_yml: okteto.yml
+          k8s_deployment_file: kubernetes/deployment.yml
