@@ -16,7 +16,7 @@ export const firebaseAuth = async (req: AuthenticatedRequest, res: Response, nex
     return next();
   }
 
-  if (!req.headers.authorization && !req.headers.id_token) {
+  if (!req.headers.authorization) {
     console.log("User not authenticated");
     return res.status(401).json({
       error: {
