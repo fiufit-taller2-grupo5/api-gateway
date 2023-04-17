@@ -4,6 +4,7 @@ import morgan from "morgan";
 import { firebaseAuth } from './middleware/firebaseAuth';
 import { AppRouter } from './AppRouter';
 import * as express from 'express';
+import { swaggerDocs } from './middleware/swaggerDocs';
 
 export class App {
     private app: Express;
@@ -29,5 +30,6 @@ export class App {
         this.app.use(morgan("common"));
         this.app.use(express.json());
         this.app.use(firebaseAuth);
+        this.app.use(swaggerDocs);
     }
 }
