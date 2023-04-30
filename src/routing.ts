@@ -26,8 +26,8 @@ const handleRequestByService = async (req: Request, res: Response, serviceUrl: s
     try {
         let axiosConfig = getAxiosConfigFromRequest(req, serviceUrl);
         let logMessage = `Sending ${req.method} request to ${serviceUrl}`;
-        if (req.body) {
-            logMessage += `with body ${JSON.stringify(req.body)}`
+        if (req.body && req.body.length > 0) {
+            logMessage += ` with body ${JSON.stringify(req.body)}`
         } 
         console.log(logMessage);
         
@@ -69,5 +69,6 @@ export const routeUserServiceRequest = async (req: Request, res: Response) => {
 export const routeTrainingServiceRequest = async (req: Request, res: Response) => {
     console.log(`Got request directed to training-service (${req.url})`)
     const traningServiceUrl = `http://training-service${req.url.replace('/training-service', '')}`;
+    console.log("Will redirect request to " + traningServiceUrl);
     handleRequestByService(req, res, traningServiceUrl);
 };
