@@ -25,7 +25,12 @@ const getAxiosConfigFromRequest = (req: Request, serviceUrl: string): AxiosReque
 const handleRequestByService = async (req: Request, res: Response, serviceUrl: string) => {
     try {
         let axiosConfig = getAxiosConfigFromRequest(req, serviceUrl);
-        console.log(`Sending ${req.method} request to ${serviceUrl} with body ${JSON.stringify(req.body)}`);
+        let logMessage = `Sending ${req.method} request to ${serviceUrl}`;
+        if (req.body) {
+            logMessage += `with body ${JSON.stringify(req.body)}`
+        } 
+        console.log(logMessage);
+        
         const response = await axios(axiosConfig);
 
         for (const key in response.headers) {
@@ -62,6 +67,7 @@ export const routeUserServiceRequest = async (req: Request, res: Response) => {
 };
 
 export const routeTrainingServiceRequest = async (req: Request, res: Response) => {
+    console.log(`Got request directed to training-service (${req.url})`)
     const traningServiceUrl = `http://training-service${req.url.replace('/training-service', '')}`;
     handleRequestByService(req, res, traningServiceUrl);
 };
