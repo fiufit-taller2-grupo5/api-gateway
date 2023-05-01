@@ -29,7 +29,7 @@ export class App {
         this.app.use(cors());
         this.app.use(morgan("common"));
         this.app.use(express.json());
-        this.app.use(firebaseAuth);
         this.app.use(swaggerDocs);
+        this.app.use(firebaseAuth);
     }
 }

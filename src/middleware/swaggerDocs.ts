@@ -15,6 +15,11 @@ const redirectToTrainingServiceDocsIsNecessary = (req: Request) => {
 }
 
 export const swaggerDocs = (req: Request, _res: Response, next: NextFunction) => {
+    if (req.headers["referer"] && req.headers["referer"]?.includes("/docs")) {
+        req.headers["dev"] = "dev";
+    }
+
+
     redirectToUserServiceDocsIfNecessary(req);
     redirectToTrainingServiceDocsIsNecessary(req);
     next();
