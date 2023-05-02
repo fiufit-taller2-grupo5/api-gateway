@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { Request, Response } from "express";
-import firebase from './firebase/admin-config';
+import { createNewAdminInFirebase } from "./firebase/utils";
 
 
 const timoutInMillis = 3000;
@@ -52,16 +52,13 @@ const handleRequestByService = async (req: Request, res: Response, serviceUrl: s
 export const routeUserServiceRequest = async (req: Request, res: Response) => {
     if (req.path == '/user-service/api/admins' && req.method == 'POST') {
         try {
-            const user = await firebase.auth().createUser({
-                email: req.body.email,
-                password: req.body.password,
-            })
-            console.log("new admin", user);
+            await createNewAdminInFirebase(req.body.email, req.body.password);
         } catch(err: any) {
             res.status(500).send(err.message);
             return;
         }
     }
+
     const userServiceUrl = `http://user-service${req.url.replace('/user-service', '')}`;
     handleRequestByService(req, res, userServiceUrl);
 };
