@@ -7,20 +7,20 @@ const timoutInMillis = 3000;
 
 const getAxiosConfigFromRequest = (req: Request, serviceUrl: string): AxiosRequestConfig => {
     const headers = { ...req.headers };
-  
+
     // Remove headers that shouldn't be forwarded
     delete headers['content-length'];
     delete headers['host'];
     delete headers['connection'];
-  
+
     return {
-      method: req.method,
-      url: serviceUrl,
-      headers: headers,
-      data: req.body,
-      timeout: timoutInMillis,
+        method: req.method,
+        url: serviceUrl,
+        headers: headers,
+        data: req.body,
+        timeout: timoutInMillis,
     };
-  };
+};
 
 const handleRequestByService = async (req: Request, res: Response, serviceUrl: string) => {
     try {
@@ -28,9 +28,9 @@ const handleRequestByService = async (req: Request, res: Response, serviceUrl: s
         let logMessage = `Sending ${req.method} request to ${serviceUrl}`;
         if (req.body && req.body.length > 0) {
             logMessage += ` with body ${JSON.stringify(req.body)}`
-        } 
+        }
         console.log(logMessage);
-        
+
         const response = await axios(axiosConfig);
 
         for (const key in response.headers) {
@@ -51,21 +51,22 @@ const handleRequestByService = async (req: Request, res: Response, serviceUrl: s
 
 export const routeUserServiceRequest = async (req: Request, res: Response) => {
     if (req.path == '/user-service/api/admins' && req.method == 'POST') {
-        try {
-            await createNewAdminInFirebase(req.body.email, req.body.password);
-        } catch(err: any) {
-            res.status(500).send(err.message);
-            return;
+        if (req.headers['test'] !== 'true') {
+            try {
+                await createNewAdminInFirebase(req.body.email, req.body.password);
+            } catch (err: any) {
+                return res.status(500).send(err.message);
+            }
         }
     }
 
     const userServiceUrl = `http://user-service${req.url.replace('/user-service', '')}`;
-    handleRequestByService(req, res, userServiceUrl);
+    return handleRequestByService(req, res, userServiceUrl);
 };
 
 export const routeTrainingServiceRequest = async (req: Request, res: Response) => {
     console.log(`Got request directed to training-service (${req.url})`)
     const traningServiceUrl = `http://training-service${req.url.replace('/training-service', '')}`;
     console.log("Will redirect request to " + traningServiceUrl);
-    handleRequestByService(req, res, traningServiceUrl);
+    return handleRequestByService(req, res, traningServiceUrl);
 };
