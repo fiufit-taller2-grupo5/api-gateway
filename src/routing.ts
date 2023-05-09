@@ -32,7 +32,8 @@ const handleRequestByService = async (req: Request, res: Response, serviceUrl: s
         console.log(logMessage);
 
         const response = await axios(axiosConfig);
-
+        console.log("response: ", response.status, response.data);
+        console.log("response headers: ", response.headers);
         for (const key in response.headers) {
             res.setHeader(key, response.headers[key]);
         }
