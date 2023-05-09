@@ -8,17 +8,20 @@ const redirectToUserServiceDocsIfNecessary = (req: Request) => {
 
 const redirectToTrainingServiceDocsIsNecessary = (req: Request) => {
     if (req.originalUrl.includes("openapi.json") && req.method == "GET") {
-        if(req.headers["referer"] && req.headers["referer"]?.includes("training-service/docs")) {
+        if (req.headers["referer"] && req.headers["referer"]?.includes("training-service/docs")) {
             req.url = req.originalUrl.replace("openapi.json", "training-service/openapi.json");
         }
     }
 }
 
 export const swaggerDocs = (req: Request, _res: Response, next: NextFunction) => {
-    if (req.headers["referer"] && req.headers["referer"]?.includes("/docs")) {
-        req.headers["dev"] = "dev";
-    }
+    // if (req.headers["referer"] && req.headers["referer"]?.includes("/docs")) {
+    //     req.headers["dev"] = "dev";
+    // }
 
+    if (req.originalUrl?.includes("/docs") || req.originalUrl?.includes("/swagger-ui") || req.originalUrl?.includes("/openapi.json")) {
+        req.headers["dev"] = "true";
+    }
 
     redirectToUserServiceDocsIfNecessary(req);
     redirectToTrainingServiceDocsIsNecessary(req);
