@@ -19,7 +19,7 @@ export class App {
         this.router.initRoutes();
     }
 
-    public startListening() { 
+    public startListening() {
         this.app.listen(this.port, () => {
             console.log(`⚡️ Api Gateway is running at port ${this.port}`);
         });
