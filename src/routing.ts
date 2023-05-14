@@ -29,6 +29,9 @@ const handleRequestByService = async (req: Request, res: Response, serviceUrl: s
         if (req.body && req.body.length > 0) {
             logMessage += ` with body ${JSON.stringify(req.body)}`
         }
+        if (req.headers && Object.keys(req.headers).length > 0) {
+            logMessage += ` and headers ${JSON.stringify(req.headers)}`
+        }
         console.log(logMessage);
 
         const response = await axios(axiosConfig);
@@ -51,13 +54,14 @@ const handleRequestByService = async (req: Request, res: Response, serviceUrl: s
 }
 
 export const routeUserServiceRequest = async (req: Request, res: Response) => {
-    if (req.path == '/user-service/api/admins' && req.method == 'POST') {
-        if (req.headers['test'] !== 'true') {
-            try {
-                await createNewAdminInFirebase(req.body.email, req.body.password);
-            } catch (err: any) {
-                return res.status(500).send(err.message);
+    if (req.path === '/user-service/api/admins' && req.method == 'POST' && req.headers['test'] !== 'true') {
+        try {
+            if (!req.body.email || !req.body.password || !req.body.name) {
+                return res.status(400).send('name, email and password are required');
             }
+            await createNewAdminInFirebase(req.body.email, req.body.password);
+        } catch (err: any) {
+            return res.status(500).send(err.message);
         }
     }
 

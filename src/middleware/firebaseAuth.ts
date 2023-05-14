@@ -1,15 +1,23 @@
 import firebase from '../firebase/admin-config';
 import { Request, Response, NextFunction } from 'express';
 
-interface UserPayload {
-  // Define userPayload properties here
+const continueWithUserEmail = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const authHeader = req.headers.authorization as string;
+    const idToken: string = authHeader.split('Bearer ')[1];
+    const decodedToken = await firebase.auth().verifyIdToken(idToken);
+    console.log("incoming request from user:", decodedToken.email);
+    req.headers["X-Email"] = decodedToken.email;
+    next();
+  } catch (error) {
+    console.log("Error while decoding id token", error);
+    return res.status(500).json({
+      error,
+    });
+  }
 }
 
-interface AuthenticatedRequest extends Request {
-  user?: UserPayload;
-}
-
-export const firebaseAuth = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+export const firebaseAuth = async (req: Request, res: Response, next: NextFunction) => {
   const headers = req.headers;
   if (headers.dev) {
     console.log("User in dev mode");
@@ -25,16 +33,5 @@ export const firebaseAuth = async (req: AuthenticatedRequest, res: Response, nex
     });
   }
 
-  try {
-    const authHeader = req.headers.authorization as string;
-    const idToken: string = authHeader.split('Bearer ')[1];
-    const userPayload: UserPayload = await firebase.auth().verifyIdToken(idToken);
-    req.user = userPayload;
-    next();
-  } catch (error) {
-    console.log("Error while decoding id token", error);
-    return res.status(500).json({
-      error,
-    });
-  }
+  return await continueWithUserEmail(req, res, next);
 };
