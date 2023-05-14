@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { Request, Response } from "express";
-import { createNewAdminInFirebase } from "./firebase/utils";
+import { createNewUserInFirebase } from "./firebase/utils";
 
 
 const timoutInMillis = 3000;
@@ -54,12 +54,12 @@ const handleRequestByService = async (req: Request, res: Response, serviceUrl: s
 }
 
 export const routeUserServiceRequest = async (req: Request, res: Response) => {
-    if (req.path === '/user-service/api/admins' && req.method == 'POST' && req.headers['test'] !== 'true') {
+    if ((req.path === '/user-service/api/admins' || (req.path === '/user-service/api/users' && req.headers["create-in-firebase"] === "true")) && req.method == 'POST' && req.headers['test'] !== 'true') {
         try {
             if (!req.body.email || !req.body.password || !req.body.name) {
                 return res.status(400).send('name, email and password are required');
             }
-            await createNewAdminInFirebase(req.body.email, req.body.password);
+            await createNewUserInFirebase(req.body.email, req.body.password);
         } catch (err: any) {
             return res.status(500).send(err.message);
         }
