@@ -44,7 +44,7 @@ const handleRequestByService = async (req: Request, res: Response, serviceUrl: s
         res.send(response.data);
     } catch (err: any) {
         if (err.code == '404') {
-            res.status(404).send('User-service endpoint not found');
+            res.status(404).send('endpoint not found');
         } else if (err && err.response) {
             res.status(err.response.status).send(err.response.data);
         } else {
@@ -54,14 +54,16 @@ const handleRequestByService = async (req: Request, res: Response, serviceUrl: s
 }
 
 export const routeUserServiceRequest = async (req: Request, res: Response) => {
-    if ((req.path === '/user-service/api/admins' || (req.path === '/user-service/api/users' && req.headers["create-in-firebase"] === "true")) && req.method == 'POST' && req.headers['test'] !== 'true') {
-        try {
-            if (!req.body.email || !req.body.password || !req.body.name) {
-                return res.status(400).send('name, email and password are required');
+    if (req.headers["dev"] !== "true") {
+        if ((req.path === '/user-service/api/admins' || (req.path === '/user-service/api/users' && req.headers["create-in-firebase"] === "true")) && req.method == 'POST' && req.headers['test'] !== 'true') {
+            try {
+                if (!req.body.email || !req.body.password || !req.body.name) {
+                    return res.status(400).send({ status: "error", message: "name, email and password are required" });
+                }
+                await createNewUserInFirebase(req.body.email, req.body.password);
+            } catch (err: any) {
+                return res.status(500).send({ status: "error", message: err.message });
             }
-            await createNewUserInFirebase(req.body.email, req.body.password);
-        } catch (err: any) {
-            return res.status(500).send(err.message);
         }
     }
 

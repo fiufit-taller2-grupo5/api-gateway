@@ -1,7 +1,7 @@
 import { Express } from 'express';
 import cors from "cors";
 import morgan from "morgan";
-import { firebaseAuth } from './middleware/firebaseAuth';
+import { addUserRoleToTheRequestHeaderMiddleware, firebaseAuth } from './middleware/firebaseAuth';
 import { AppRouter } from './AppRouter';
 import * as express from 'express';
 import { swaggerDocs } from './middleware/swaggerDocs';
@@ -31,5 +31,6 @@ export class App {
         this.app.use(express.json());
         this.app.use(swaggerDocs);
         this.app.use(firebaseAuth);
+        this.app.use(addUserRoleToTheRequestHeaderMiddleware);
     }
 }
