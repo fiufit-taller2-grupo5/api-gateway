@@ -43,6 +43,12 @@ export const addUserRoleToTheRequestHeaderMiddleware = async (req: Request, res:
 }
 
 export const firebaseAuth = async (req: Request, res: Response, next: NextFunction) => {
+
+
+  if (req.headers['login-mobile-app']) {
+    return next();
+  }
+
   const headers = req.headers;
   if (headers["dev-email"]) {
     console.log("User in dev mode");

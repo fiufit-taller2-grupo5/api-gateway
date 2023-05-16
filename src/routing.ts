@@ -54,6 +54,12 @@ const handleRequestByService = async (req: Request, res: Response, serviceUrl: s
 }
 
 export const routeUserServiceRequest = async (req: Request, res: Response) => {
+    // caso login desde app mobile
+    if (req.headers['login-mobile-app']) {
+        const userServiceUrl = `http://user-service${req.url.replace('/user-service', '')}`;
+        return handleRequestByService(req, res, userServiceUrl);
+    }
+
     if (req.headers["dev"] !== "true") {
         if ((req.path === '/user-service/api/admins' || (req.path === '/user-service/api/users' && req.headers["create-in-firebase"] === "true")) && req.method == 'POST' && req.headers['test'] !== 'true') {
             try {
