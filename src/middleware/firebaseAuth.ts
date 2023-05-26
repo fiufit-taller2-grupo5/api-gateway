@@ -23,6 +23,10 @@ export const addUserRoleToTheRequestHeaderMiddleware = async (req: Request, res:
   if (userEmail) {
     try {
       const user = await axios('http://user-service:80/api/users/by_email/' + userEmail);
+      if (user.data.state === "blocked") {
+        console.log("User making request is blocked!");
+        return res.status(403).json({ message: "you do not have access to the system" });
+      }
       console.log("User role is", user.data.role);
       req.headers["X-Role"] = user.data.role;
     } catch (error: any) {
