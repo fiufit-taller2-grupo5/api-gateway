@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { createNewUserInFirebase } from "./firebase/utils";
 
 
-const timoutInMillis = 3000;
+const timoutInMillis = 10000;
 
 const getAxiosConfigFromRequest = (req: Request, serviceUrl: string): AxiosRequestConfig => {
     const headers = { ...req.headers };
