@@ -49,7 +49,7 @@ export const addUserRoleToTheRequestHeaderMiddleware = async (req: Request, res:
 export const firebaseAuth = async (req: Request, res: Response, next: NextFunction) => {
 
 
-  if (req.headers['login-mobile-app']) {
+  if (req.headers['login-mobile-app'] || req.headers['password-reset']) {
     return next();
   }
 
