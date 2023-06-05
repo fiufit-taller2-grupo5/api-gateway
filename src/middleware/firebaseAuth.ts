@@ -12,7 +12,7 @@ const continueWithUserEmail = async (req: Request, res: Response, next: NextFunc
     next();
   } catch (error) {
     console.log("Error while decoding id token", error);
-    return res.status(500).json({
+    return res.status(401).json({
       error,
     });
   }
