@@ -33,6 +33,8 @@ const getAxiosConfigFromRequest = (req: Request, serviceUrl: string): AxiosReque
     };
 };
 
+
+
 const handleRequestByService = async (req: Request, res: Response, serviceUrl: string) => {
     try {
         let axiosConfig = getAxiosConfigFromRequest(req, serviceUrl);
@@ -99,3 +101,5 @@ export const routeTrainingServiceRequest = async (req: Request, res: Response) =
     console.log("Will redirect request to " + traningServiceUrl);
     return await handleRequestByService(req, res, traningServiceUrl);
 };
+
+

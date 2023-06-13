@@ -29,7 +29,6 @@ export class App {
         });
     }
 
-
     private initMiddleware() {
         this.app.use(cors());
         this.app.use(upload.single('file'));
