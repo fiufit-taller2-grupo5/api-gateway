@@ -17,9 +17,8 @@ const getAxiosConfigFromRequest = (req: Request, serviceUrl: string): AxiosReque
     if (req.file) {
         console.log("req.file.buffer len: ");
         console.log(req.file.buffer.length);
-        // access file.metaData
 
-        const fileData = new Blob([req.file.buffer], { type: "image/jpeg" })
+        const fileData = new Blob([req.file.buffer], { type: "image/*" })
         const formData = new FormData();
         formData.append('file', fileData, req.file.originalname);
         data = formData;
@@ -33,8 +32,6 @@ const getAxiosConfigFromRequest = (req: Request, serviceUrl: string): AxiosReque
         timeout: timoutInMillis,
     };
 };
-
-
 
 const handleRequestByService = async (req: Request, res: Response, serviceUrl: string) => {
     try {
@@ -102,5 +99,3 @@ export const routeTrainingServiceRequest = async (req: Request, res: Response) =
     console.log("Will redirect request to " + traningServiceUrl);
     return await handleRequestByService(req, res, traningServiceUrl);
 };
-
-
