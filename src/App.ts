@@ -5,6 +5,10 @@ import { addUserRoleToTheRequestHeaderMiddleware, firebaseAuth } from './middlew
 import { AppRouter } from './AppRouter';
 import * as express from 'express';
 import { swaggerDocs } from './middleware/swaggerDocs';
+import multer from 'multer';
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 
 export class App {
     private app: Express;
@@ -25,8 +29,10 @@ export class App {
         });
     }
 
+
     private initMiddleware() {
         this.app.use(cors());
+        this.app.use(upload.single('file'));
         this.app.use(morgan("common"));
         this.app.use(express.json());
         this.app.use(swaggerDocs);

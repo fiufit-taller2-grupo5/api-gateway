@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { Request, Response } from "express";
 import { createNewUserInFirebase } from "./firebase/utils";
-
+import multer, { Multer } from 'multer';
 
 const timoutInMillis = 10000;
 
@@ -13,14 +13,28 @@ const getAxiosConfigFromRequest = (req: Request, serviceUrl: string): AxiosReque
     delete headers['host'];
     delete headers['connection'];
 
+    let data = req.body;
+    if (req.file) {
+        console.log("req.file.buffer len: ");
+        console.log(req.file.buffer.length);
+        // access file.metaData
+
+        const fileData = new Blob([req.file.buffer], { type: "image/jpeg" })
+        const formData = new FormData();
+        formData.append('file', fileData, req.file.originalname);
+        data = formData;
+    }
+
     return {
         method: req.method,
         url: serviceUrl,
         headers: headers,
-        data: req.body,
+        data: data,
         timeout: timoutInMillis,
     };
 };
+
+
 
 const handleRequestByService = async (req: Request, res: Response, serviceUrl: string) => {
     try {
@@ -29,11 +43,16 @@ const handleRequestByService = async (req: Request, res: Response, serviceUrl: s
         if (req.body && req.body.length > 0) {
             logMessage += ` with body ${JSON.stringify(req.body)}`
         }
+        if (req.file) {
+            logMessage += ` with file ${req.file.originalname}`
+        }
         if (req.headers && Object.keys(req.headers).length > 0) {
             logMessage += ` and headers ${JSON.stringify(req.headers)}`
         }
         console.log(logMessage);
 
+        console.log("axiosConfig:");
+        console.log(axiosConfig);
         const response = await axios(axiosConfig);
         console.log("response: ", response.status, response.data);
         console.log("response headers: ", response.headers);
@@ -81,5 +100,7 @@ export const routeTrainingServiceRequest = async (req: Request, res: Response) =
     console.log(`Got request directed to training-service (${req.url})`)
     const traningServiceUrl = `http://training-service${req.url.replace('/training-service', '')}`;
     console.log("Will redirect request to " + traningServiceUrl);
-    return handleRequestByService(req, res, traningServiceUrl);
+    return await handleRequestByService(req, res, traningServiceUrl);
 };
+
+
