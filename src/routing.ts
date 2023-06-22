@@ -1,7 +1,6 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { Request, Response } from "express";
 import { createNewUserInFirebase } from "./firebase/utils";
-import multer, { Multer } from 'multer';
 
 const timoutInMillis = 10000;
 
