@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig } from "axios";
 import { Request, Response } from "express";
 import { createNewUserInFirebase } from "./firebase/utils";
 
-const timoutInMillis = 10000;
+const timoutInMillis = 23000;
 
 const getAxiosConfigFromRequest = (req: Request, serviceUrl: string): AxiosRequestConfig => {
     const headers = { ...req.headers };
