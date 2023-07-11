@@ -6,6 +6,8 @@ const continueWithUserEmail = async (req: Request, res: Response, next: NextFunc
   try {
     const authHeader = req.headers.authorization as string;
     const idToken: string = authHeader.split('Bearer ')[1];
+    console.log("Bearer token is: ", idToken);
+    console.log("entire request headers are:", req.headers);
     const decodedToken = await firebase.auth().verifyIdToken(idToken);
     console.log("incoming request from user:", decodedToken.email);
     req.headers["X-Email"] = decodedToken.email;
